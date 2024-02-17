@@ -1,0 +1,30 @@
+version: "2.3"
+services:
+  vpn:
+    image: poyaz/openvpn
+    network_mode: bridge
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      - $PWD/storage/docker/vpn:/vpn
+    cap_add:
+      - NET_ADMIN
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    command:
+      - -d
+    restart: "always"
+
+  socks5:
+    image: ghcr.io/httptoolkit/docker-socks-tunnel
+    depends_on:
+      vpn:
+        condition: service_healthy
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    healthcheck:
+      test: [ "CMD-SHELL", "test `ip -o a show | cut -d ' ' -f 2 | grep tun0 | wc -l` -eq 1 || kill 1" ]
+      interval: 11s
+      timeout: 2s
+    restart: "always"
+    network_mode: "service:vpn"

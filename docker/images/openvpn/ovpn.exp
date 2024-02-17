@@ -1,0 +1,45 @@
+#!/usr/bin/expect --
+
+set timeout $env(VPN_TIMEOUT)
+
+proc execute_command {arguments} {
+  global opts env
+
+  log_user 1
+
+  spawn /sbin/tini -- /usr/bin/openvpn.sh $arguments
+
+  expect -exact "Enter Private Key Password:"
+  send -- "$env(VPN_PASS)\n"
+  send_user -- "\n"
+
+  log_user 0 
+
+  expect {
+
+    .* {
+      log_user 1
+
+      expect {
+        "Initialization Sequence Completed" {
+          set timeout -1
+
+          trap {
+              send \x03
+              send_user "You pressed Ctrl+C\n"
+              exit
+          } SIGINT
+
+          expect eof
+        } timeout {
+          send_user -- "Failed to bring tunnel up after $env(VPN_TIMEOUT)s\n"
+          exit 1
+        }
+      }
+      
+    }
+  }
+
+}
+
+execute_command $argv
