@@ -14,6 +14,11 @@ services:
     command:
       - -d
     restart: "always"
+    logging:
+      driver: ${VPN_LOG_DRIVER:-json-file}
+      options:
+        max-size: ${VPN_LOG_MAX_SIZE:-2m}
+        max-file: ${VPN_LOG_MAX_FILE:-10}
 
   proxy:
     image: ghcr.io/sagernet/sing-box
@@ -36,3 +41,8 @@ services:
       timeout: 2s
     restart: "always"
     network_mode: "service:vpn"
+    logging:
+      driver: ${PROXY_LOG_DRIVER:-json-file}
+      options:
+        max-size: ${PROXY_LOG_MAX_SIZE:-2m}
+        max-file: ${PROXY_LOG_MAX_FILE:-10}

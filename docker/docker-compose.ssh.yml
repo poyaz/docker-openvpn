@@ -11,3 +11,8 @@ services:
       timeout: 2s
     restart: "always"
     network_mode: "service:vpn"
+    logging:
+      driver: ${SSH_LOG_DRIVER:-json-file}
+      options:
+        max-size: ${SSH_LOG_MAX_SIZE:-2m}
+        max-file: ${SSH_LOG_MAX_FILE:-10}

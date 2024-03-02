@@ -22,3 +22,8 @@ services:
       timeout: 2s
     network_mode: "service:vpn"
     restart: "always"
+    logging:
+      driver: ${DNS_LOG_DRIVER:-json-file}
+      options:
+        max-size: ${DNS_LOG_MAX_SIZE:-2m}
+        max-file: ${DNS_LOG_MAX_FILE:-10}
