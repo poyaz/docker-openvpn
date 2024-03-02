@@ -15,11 +15,19 @@ services:
       - -d
     restart: "always"
 
-  socks5:
-    image: ghcr.io/httptoolkit/docker-socks-tunnel
+  proxy:
+    image: ghcr.io/sagernet/sing-box
     depends_on:
       vpn:
         condition: service_healthy
+    volumes:
+      - $PWD/storage/docker/proxy/:/etc/sing-box/
+    command:
+      - -D
+      - /var/lib/sing-box
+      - -C
+      - /etc/sing-box/
+      - run
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     healthcheck:
