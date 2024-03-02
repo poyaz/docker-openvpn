@@ -14,18 +14,18 @@ For run with docker compose you can use bellow steps:
 1. Copy `env/vpn/.env.example` to `env/vpn/.env`
 2. Fill your vpn identity on `env/vpn/.env`
 3. Copy your `.ovpn` file to **storage/docker/vpn/** directory
-4. Execute bellow command for run **opnvpn** and **socks5**
+4. Execute bellow command for run **opnvpn** and **proxy (http, socks5)**
 
 ```bash
 ### Without publish port
-### Run two container: 1. opnvpn 2.socks5
+### Run two container: 1. opnvpn 2.proxy
 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   up -d
 
 ### With publish port on 127.0.0.1
-### socks5 server: 127.0.0.1:1080
+### proxy server: 127.0.0.1:1080 (http, socks5)
 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
@@ -36,15 +36,15 @@ docker-compose \
 Also, you can run with own compose config. You can create a config compose file on `docker/custom` folder. This folder
 not tracked with source control.
 
-**Tip:** You can add custom port for socks5 server without change in any compose file with below environment
+**Tip:** You can add custom port for proxy server without change in any compose file with below environment
 variable:
 
-* OPENVPN_SOCKS_PORT (Default: 1080)
+* OPENVPN_PROXY_PORT (Default: 1080)
 
 ```bash
 ### With publish port on 127.0.0.1
-### socks5 server: 127.0.0.1:8080
-OPENVPN_SOCKS_PORT=8080 docker-compose \
+### proxy server: 127.0.0.1:8080 (http, socks5)
+OPENVPN_PROXY_PORT=8080 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   -f docker/docker-compose.publish.yml \
@@ -60,11 +60,11 @@ If you want using ssh server follow bellow steps:
 3. Copy your `.ovpn` file to **storage/docker/vpn/** directory
 4. Copy `env/ssh/.env.example` to `env/ssh/.env`
 5. Fill you ssh requirement authenticate on `env/ssh/.env`
-6. Execute bellow command for run **opnvpn** and **ssh** and **socks5**
+6. Execute bellow command for run **opnvpn** and **ssh** and **proxy (http, socks5)**
 
 ```bash
 ### Without publish port
-### Run three container: 1. opnvpn 2.socks5 3, ssh
+### Run three container: 1. opnvpn 2.proxy (http, socks5) 3, ssh
 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
@@ -73,7 +73,7 @@ docker-compose \
   up -d
 
 ### With publish port on 127.0.0.1
-### socks5 server: 127.0.0.1:1080
+### proxy server: 127.0.0.1:1080 (http, socks5)
 ### ssh server: 127.0.0.1:2222
 docker-compose \
   -f docker-compose.yml \
@@ -88,16 +88,16 @@ docker-compose \
 Also, you can run with own compose config. You can create a config compose file on `docker/custom` folder. This folder
 not tracked with source control.
 
-**Tip:** You can add custom port for ssh and socks5 server without change in any compose file with two environment
+**Tip:** You can add custom port for ssh and proxy server without change in any compose file with two environment
 variable:
 
 * OPENVPN_SSH_PORT (Default: 2222)
-* OPENVPN_SOCKS_PORT (Default: 1080)
+* OPENVPN_PROXY_PORT (Default: 1080)
 
 ```bash
 ### With publish port on 127.0.0.1
-### socks5 server: 127.0.0.1:8080
-OPENVPN_SSH_PORT=2020 OPENVPN_SOCKS_PORT=8080 docker-compose \
+### proxy server: 127.0.0.1:8080 (http, socks5)
+OPENVPN_SSH_PORT=2020 OPENVPN_PROXY_PORT=8080 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   -f docker/docker-compose.publish.yml \
@@ -113,7 +113,7 @@ If you want to use port forwarder follow bellow steps:
 
 ```bash
 ### Without publish port
-### Run three container: 1. opnvpn 2.socks5 3. socat
+### Run three container: 1. opnvpn 2.proxy (http, socks5) 3. socat
 OPENVPN_SOCAT_DEST_ADDR=remote-addr OPENVPN_SOCAT_DEST_PORT=3389 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
@@ -121,7 +121,7 @@ OPENVPN_SOCAT_DEST_ADDR=remote-addr OPENVPN_SOCAT_DEST_PORT=3389 docker-compose 
   up -d
 
 ### With publish port on 127.0.0.1
-### socks5 server: 127.0.0.1:1080
+### proxy server: 127.0.0.1:1080 (http, socks5)
 ### socat server: 127.0.0.1:3389
 OPENVPN_SOCAT_PORT=3389 OPENVPN_SOCAT_DEST_ADDR=remote-addr OPENVPN_SOCAT_DEST_PORT=3389 docker-compose \
   -f docker-compose.yml \
@@ -135,7 +135,7 @@ OPENVPN_SOCAT_PORT=3389 OPENVPN_SOCAT_DEST_ADDR=remote-addr OPENVPN_SOCAT_DEST_P
 Also, you can run with own compose config. You can create a config compose file on `docker/custom` folder. This folder
 not tracked with source control.
 
-**Tip:** You can add custom port for socat and socks5 server without change in any compose file with two environment
+**Tip:** You can add custom port for socat and proxy server without change in any compose file with two environment
 variable:
 
 * OPENVPN_SOCAT_PORT (Default: 3389)
@@ -165,7 +165,7 @@ For run with docker compose you can use bellow steps:
 4. Copy `env/vpn/.env.example` to `env/vpn/vpn-2.env`
 5. Fill your vpn identity on `env/vpn/vpn-2.env`
 6. You have to fill variable `OPENVPN_VPN_ENV`, It is path of env file you want use it
-7. Execute bellow command for run **opnvpn** and **socks5**
+7. Execute bellow command for run **opnvpn** and **proxy (http, socks5)**
 
 ```bash
 ### Without publish port
@@ -176,8 +176,8 @@ COMPOSE_PROJECT_NAME=vpn-1 OPENVPN_VPN_ENV=env/vpn/vpn-1.env docker-compose \
   up -d
 
 ### With publish port on 127.0.0.1
-### Run VPN-1 with socks5 publish port on port 8080
-COMPOSE_PROJECT_NAME=vpn-1 OPENVPN_VPN_ENV=env/vpn/vpn-1.env OPENVPN_SOCKS_PORT=8080 docker-compose \
+### Run VPN-1 with proxy publish port on port 8080
+COMPOSE_PROJECT_NAME=vpn-1 OPENVPN_VPN_ENV=env/vpn/vpn-1.env OPENVPN_PROXY_PORT=8080 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   -f docker/docker-compose.publish.yml \
@@ -193,8 +193,8 @@ COMPOSE_PROJECT_NAME=vpn-2 OPENVPN_VPN_ENV=env/vpn/vpn-2.env docker-compose \
   up -d
 
 ### With publish port on 127.0.0.1
-### Run VPN-2 with socks5 publish port on port 8081
-COMPOSE_PROJECT_NAME=vpn-2 OPENVPN_VPN_ENV=env/vpn/vpn-2.env OPENVPN_SOCKS_PORT=8081 docker-compose \
+### Run VPN-2 with proxy publish port on port 8081
+COMPOSE_PROJECT_NAME=vpn-2 OPENVPN_VPN_ENV=env/vpn/vpn-2.env OPENVPN_PROXY_PORT=8081 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   -f docker/docker-compose.publish.yml \
@@ -205,9 +205,9 @@ You can do same for port forwarder container:
 
 ```bash
 ### Run VPN-1 and forwarder RDP port to remote-server-1
-### socks5 server: 127.0.0.1:1080
+### proxy server: 127.0.0.1:8080 (http, socks5)
 ### socat server: 127.0.0.1:3389
-COMPOSE_PROJECT_NAME=vpn-1 OPENVPN_VPN_ENV=env/vpn/vpn-1.env OPENVPN_SOCKS_PORT=8080 OPENVPN_SOCAT_PORT=3389 OPENVPN_SOCAT_DEST_ADDR=remote-server-1 OPENVPN_SOCAT_DEST_PORT=3389 docker-compose \
+COMPOSE_PROJECT_NAME=vpn-1 OPENVPN_VPN_ENV=env/vpn/vpn-1.env OPENVPN_PROXY_PORT=8080 OPENVPN_SOCAT_PORT=3389 OPENVPN_SOCAT_DEST_ADDR=remote-server-1 OPENVPN_SOCAT_DEST_PORT=3389 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   -f docker/docker-compose.publish.yml \
@@ -216,9 +216,9 @@ COMPOSE_PROJECT_NAME=vpn-1 OPENVPN_VPN_ENV=env/vpn/vpn-1.env OPENVPN_SOCKS_PORT=
   up -d
   
 ### Run VPN-2 and forwarder RDP port to remote-server-2
-### socks5 server: 127.0.0.1:1081
+### proxy server: 127.0.0.1:1081 (http, socks5)
 ### socat server: 127.0.0.1:3390
-COMPOSE_PROJECT_NAME=vpn-2 OPENVPN_VPN_ENV=env/vpn/vpn-2.env OPENVPN_SOCKS_PORT=1081 OPENVPN_SOCAT_PORT=3390 OPENVPN_SOCAT_DEST_ADDR=remote-server-2 OPENVPN_SOCAT_DEST_PORT=3389 docker-compose \
+COMPOSE_PROJECT_NAME=vpn-2 OPENVPN_VPN_ENV=env/vpn/vpn-2.env OPENVPN_PROXY_PORT=1081 OPENVPN_SOCAT_PORT=3390 OPENVPN_SOCAT_DEST_ADDR=remote-server-2 OPENVPN_SOCAT_DEST_PORT=3389 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   -f docker/docker-compose.publish.yml \
