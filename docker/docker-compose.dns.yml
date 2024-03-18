@@ -13,7 +13,7 @@ services:
       - --no-hosts
       - --strict-order
       - --listen-address=0.0.0.0
-      - --port=1053
+      - --port=1081
       - --bind-interfaces
       - --resolv-file=/etc/resolv.conf
     healthcheck:

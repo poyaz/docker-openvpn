@@ -64,7 +64,10 @@ If you want using ssh server follow bellow steps:
 
 ```bash
 ### Without publish port
-### Run three container: 1. opnvpn 2.proxy (http, socks5) 3, ssh
+### Run three container: 
+### 1. opnvpn 
+### 2. http/socks5 (Port: 1080)
+### 3, ssh (Port: 1082)
 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
@@ -73,15 +76,13 @@ docker-compose \
   up -d
 
 ### With publish port on 127.0.0.1
-### proxy server: 127.0.0.1:1080 (http, socks5)
-### ssh server: 127.0.0.1:2222
+### proxy server: 127.0.0.1:1080 (http/socks5)
+### ssh server: 127.0.0.1:1082
 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
-  -f docker/docker-compose.publish.yml \
   -f docker/docker-compose.ssh.yml \
   -f docker/docker-compose.ssh-env.yml \
-  -f docker/docker-compose.ssh-publish.yml \
   up -d
 ```
 
@@ -91,12 +92,12 @@ not tracked with source control.
 **Tip:** You can add custom port for ssh and proxy server without change in any compose file with two environment
 variable:
 
-* OPENVPN_SSH_PORT (Default: 2222)
+* OPENVPN_SSH_PORT (Default: 1082)
 * OPENVPN_PROXY_PORT (Default: 1080)
 
 ```bash
 ### With publish port on 127.0.0.1
-### proxy server: 127.0.0.1:8080 (http, socks5)
+### proxy server: 127.0.0.1:8080 (http/socks5)
 OPENVPN_SSH_PORT=2020 OPENVPN_PROXY_PORT=8080 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
@@ -113,7 +114,10 @@ If you want to use port forwarder follow bellow steps:
 
 ```bash
 ### Without publish port
-### Run three container: 1. opnvpn 2.proxy (http, socks5) 3. socat
+### Run three container: 
+### 1. opnvpn
+### 2.http/socks5 (Port: 1080) 
+### 3. socat
 OPENVPN_SOCAT_DEST_ADDR=remote-addr OPENVPN_SOCAT_DEST_PORT=3389 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
@@ -121,7 +125,7 @@ OPENVPN_SOCAT_DEST_ADDR=remote-addr OPENVPN_SOCAT_DEST_PORT=3389 docker-compose 
   up -d
 
 ### With publish port on 127.0.0.1
-### proxy server: 127.0.0.1:1080 (http, socks5)
+### proxy server: 127.0.0.1:1080 (http/socks5)
 ### socat server: 127.0.0.1:3389
 OPENVPN_SOCAT_PORT=3389 OPENVPN_SOCAT_DEST_ADDR=remote-addr OPENVPN_SOCAT_DEST_PORT=3389 docker-compose \
   -f docker-compose.yml \
@@ -146,10 +150,10 @@ variable:
 OPENVPN_SOCAT_DEST_ADDR=remote-addr OPENVPN_SOCAT_DEST_PORT=3389 OPENVPN_SOCAT_PORT=3389 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
-  -f docker/docker-compose.publish.yml \
   -f docker/docker-compose.ssh.yml \
   -f docker/docker-compose.ssh-env.yml \
-  -f docker/docker-compose.ssh-publish.yml \
+  -f docker/docker-compose.socat.yml \
+  -f docker/docker-compose.socat-publish.yml \
   up -d
 ```
 
@@ -165,7 +169,7 @@ For run with docker compose you can use bellow steps:
 4. Copy `env/vpn/.env.example` to `env/vpn/vpn-2.env`
 5. Fill your vpn identity on `env/vpn/vpn-2.env`
 6. You have to fill variable `OPENVPN_VPN_ENV`, It is path of env file you want use it
-7. Execute bellow command for run **opnvpn** and **proxy (http, socks5)**
+7. Execute bellow command for run **opnvpn** and **proxy (http/socks5)**
 
 ```bash
 ### Without publish port
@@ -180,7 +184,6 @@ COMPOSE_PROJECT_NAME=vpn-1 OPENVPN_VPN_ENV=env/vpn/vpn-1.env docker-compose \
 COMPOSE_PROJECT_NAME=vpn-1 OPENVPN_VPN_ENV=env/vpn/vpn-1.env OPENVPN_PROXY_PORT=8080 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
-  -f docker/docker-compose.publish.yml \
   up -d
   
 ##############################################################
@@ -197,7 +200,6 @@ COMPOSE_PROJECT_NAME=vpn-2 OPENVPN_VPN_ENV=env/vpn/vpn-2.env docker-compose \
 COMPOSE_PROJECT_NAME=vpn-2 OPENVPN_VPN_ENV=env/vpn/vpn-2.env OPENVPN_PROXY_PORT=8081 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
-  -f docker/docker-compose.publish.yml \
   up -d
 ```
 
@@ -210,18 +212,16 @@ You can do same for port forwarder container:
 COMPOSE_PROJECT_NAME=vpn-1 OPENVPN_VPN_ENV=env/vpn/vpn-1.env OPENVPN_PROXY_PORT=8080 OPENVPN_SOCAT_PORT=3389 OPENVPN_SOCAT_DEST_ADDR=remote-server-1 OPENVPN_SOCAT_DEST_PORT=3389 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
-  -f docker/docker-compose.publish.yml \
   -f docker/docker-compose.socat.yml \
   -f docker/docker-compose.socat-publish.yml \
   up -d
   
 ### Run VPN-2 and forwarder RDP port to remote-server-2
-### proxy server: 127.0.0.1:1081 (http, socks5)
+### proxy server: 127.0.0.1:1081 (http/socks5)
 ### socat server: 127.0.0.1:3390
 COMPOSE_PROJECT_NAME=vpn-2 OPENVPN_VPN_ENV=env/vpn/vpn-2.env OPENVPN_PROXY_PORT=1081 OPENVPN_SOCAT_PORT=3390 OPENVPN_SOCAT_DEST_ADDR=remote-server-2 OPENVPN_SOCAT_DEST_PORT=3389 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
-  -f docker/docker-compose.publish.yml \
   -f docker/docker-compose.socat.yml \
   -f docker/docker-compose.socat-publish.yml \
   up -d
@@ -265,11 +265,11 @@ If you want to connect another server you can use ssh jump with below sample:
 
 ```bash
 ### If use docker/docker-compose.publish.yml
-ssh -o ProxyCommand="ssh -W %h:%p -p 2222 vpn@127.0.0.1" <username>@<target-host>
+ssh -o ProxyCommand="ssh -W %h:%p -p 1082 vpn@127.0.0.1" <username>@<target-host>
 
 ### If don't use docker/docker-compose.publish.yml
 ### get container ip with `docker inspect --format '{{ .NetworkSettings.IPAddress }}' <container>`
-ssh -o ProxyCommand="ssh -W %h:%p -p 2222 vpn@<container-ip>" usr@server
+ssh -o ProxyCommand="ssh -W %h:%p -p 1082 vpn@<container-ip>" usr@server
 ```
 
 If your ssh server has been removed, and you create new ssh server (or recreated). You
@@ -279,7 +279,7 @@ have `Error: forwarding disabled due to host key check failure` error and can fi
 2. You can use bellow command for a skip ssh host key (Because we trust to this server)
 
 ```bash
-ssh -o ProxyCommand="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -p 2222 vpn@127.0.0.1" <username>@<target-host>
+ssh -o ProxyCommand="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -p 1082 vpn@127.0.0.1" <username>@<target-host>
 ```
 
 ### With socks5 tunnel

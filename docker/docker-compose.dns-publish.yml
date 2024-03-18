@@ -1,6 +1,0 @@
-version: "2.3"
-services:
-  vpn:
-    ports:
-      - 127.0.0.1:${OPENVPN_DNS_PORT:-1053}:1053/tcp
-      - 127.0.0.1:${OPENVPN_DNS_PORT:-1053}:1053/udp
